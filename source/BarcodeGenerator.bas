@@ -4,11 +4,10 @@ ModulesStructureVersion=1
 Type=Class
 Version=10.3
 @EndOfDesignText@
-' Class module: B4XBarcodeDrawer
-' version 1.13
-' Author: Aeric Poon 
-' Details: Refactored for reusable, multi-format barcode drawing
-' Works in: B4J, B4A, B4i
+' Class: BarcodeGenerator
+' version 1.14
+'
+' Author: Aeric Poon
 ' Credits: Lucas Siqueira
 ' Reference: https://www.b4x.com/android/forum/threads/b4x-barcodegenerator-cross-platform-barcode-code-generator.147841/
 Sub Class_Globals
@@ -17,18 +16,7 @@ Sub Class_Globals
 	Private Pattern2 As Map = CreateMap("0": "0100111", "1": "0110011", "2": "0011011", "3": "0100001", "4": "0011101", "5": "0111001", "6": "0000101", "7": "0010001", "8": "0001001", "9": "0010111")
 	Private Pattern3 As Map = CreateMap("0": "1110010", "1": "1100110", "2": "1101100", "3": "1000010", "4": "1011100", "5": "1001110", "6": "1010000", "7": "1000100", "8": "1001000", "9": "1110100")
 	Private Pattern4 As Map = CreateMap("0": "-LLLLLL=RRRRRR-", "1": "-LLGLGG=RRRRRR-", "2": "-LLGGLG=RRRRRR-", "3": "-LLGGGL=RRRRRR-", "4": "-LGLLGG=RRRRRR-", "5": "-LGGLLG=RRRRRR-", "6": "-LGGGLL=RRRRRR-", "7": "-LGLGLG=RRRRRR-", "8": "-LGLGGL=RRRRRR-", "9": "-LGGLGL=RRRRRR-")
-	Private Magic As List = Array As Int(1740, _
-	1644, 1638, 1176, 1164, 1100, 1224, 1220, 1124, 1608, _
-	1604, 1572, 1436, 1244, 1230, 1484, 1260, 1254, 1650, _
-	1628, 1614, 1764, 1652, 1902, 1868, 1836, 1830, 1892, _
-	1844, 1842, 1752, 1734, 1590, 1304, 1112, 1094, 1416, _
-	1128, 1122, 1672, 1576, 1570, 1464, 1422, 1134, 1496, _
-	1478, 1142, 1910, 1678, 1582, 1768, 1762, 1774, 1880, _
-	1862, 1814, 1896, 1890, 1818, 1914, 1602, 1930, 1328, _
-	1292, 1200, 1158, 1068, 1062, 1424, 1412, 1232, 1218, _
-	1076, 1074, 1554, 1616, 1978, 1556, 1146, 1340, 1212, _
-	1182, 1508, 1268, 1266, 1956, 1940, 1938, 1758, 1782, _
-	1974, 1400, 1310, 1118)
+	Private Magic As List = Array As Int(1740, 1644, 1638, 1176, 1164, 1100, 1224, 1220, 1124, 1608, 1604, 1572, 1436, 1244, 1230, 1484, 1260, 1254, 1650, 1628, 1614, 1764, 1652, 1902, 1868, 1836, 1830, 1892, 1844, 1842, 1752, 1734, 1590, 1304, 1112, 1094, 1416, 1128, 1122, 1672, 1576, 1570, 1464, 1422, 1134, 1496, 1478, 1142, 1910, 1678, 1582, 1768, 1762, 1774, 1880, 1862, 1814, 1896, 1890, 1818, 1914, 1602, 1930, 1328, 1292, 1200, 1158, 1068, 1062, 1424, 1412, 1232, 1218, 1076, 1074, 1554, 1616, 1978, 1556, 1146, 1340, 1212, 1182, 1508, 1268, 1266, 1956, 1940, 1938, 1758, 1782, 1974, 1400, 1310, 1118)
 	Private blueBars As Boolean = False
 End Sub
 
@@ -95,7 +83,7 @@ Private Sub DrawText (cvs As B4XCanvas, barcodeType As String, code As String)
 					sb.Append("  ")
 				End If
 			Next
-			cvs.DrawText(sb.ToString, 1dip, cvs.TargetView.Height - 40dip + 20dip, font, xui.Color_Black, "LEFT")
+			cvs.DrawText(sb.ToString, 1dip, cvs.TargetView.Height - 20dip, font, xui.Color_Black, "LEFT")
 		Case "EAN13"
 			For i = 1 To code.Length
 				Dim value As String = code.CharAt(i - 1)
@@ -110,7 +98,7 @@ Private Sub DrawText (cvs As B4XCanvas, barcodeType As String, code As String)
 					sb.Append("  ")
 				End If
 			Next
-			cvs.DrawText(sb.ToString, 1dip, cvs.TargetView.Height - 40dip + 20dip, font, xui.Color_Black, "LEFT")
+			cvs.DrawText(sb.ToString, 1dip, cvs.TargetView.Height - 20dip, font, xui.Color_Black, "LEFT")
 		Case "CODE128"
 			For i = 1 To code.Length
 				Dim value As String = code.CharAt(i - 1)
@@ -125,7 +113,7 @@ Private Sub DrawText (cvs As B4XCanvas, barcodeType As String, code As String)
 					sb.Append("  ")
 				End If
 			Next
-			cvs.DrawText(code, cvs.TargetView.Width/2, cvs.TargetView.Height - 40dip + 20dip, font, xui.Color_Black, "CENTER")
+			cvs.DrawText(code, cvs.TargetView.Width / 2, cvs.TargetView.Height - 20dip, font, xui.Color_Black, "CENTER")
 	End Select
 End Sub
 
@@ -174,12 +162,12 @@ Private Sub EAN13Generate (code As String) As String
 		Select value3
 			Case "L"
 				sb.Append(Pattern1.Get(value2))
+			'Case "J"
 			Case "G"
 				sb.Append(Pattern2.Get(value2))
 			Case "R"
 				sb.Append(Pattern3.Get(value2))
 			'Case "S"
-			
 			Case "-"
 				sb.Append("202")
 			Case "="
@@ -218,7 +206,6 @@ Private Sub UPCAGenerate (code As String) As String
 				value2 = value2.Replace("1", "2")
 				sb.Append(value2)
 			'Case "G"
-			'	sb.Append(Pattern2.Get(value2))
 			Case "R"
 				sb.Append(Pattern3.Get(value2))
 			Case "S"
@@ -264,7 +251,7 @@ Private Sub Code128Generate (code As String) As String
 End Sub
 
 Private Sub Code128Sequence (value As String) As String
-	Dim digit As Int = Code128Decode(value) ' 0 to 94
+	Dim digit As Int = Code128Decode(value)
 	If digit < 0 Or digit > 94 Then Return ""
 	Return Dec2Bin(Magic.Get(digit))
 End Sub
@@ -274,7 +261,6 @@ Private Sub Code128Decode (value As String) As Int
 End Sub
 
 Private Sub Code128Encode (digit As Int) As String
-	'digit = digit - 32
 	If digit < 0 Or digit > 94 Then digit = 0
 	digit = digit + 32
 	Return Chr(digit)
